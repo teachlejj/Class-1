@@ -3,58 +3,1070 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Attendance Tracker</title>
+    <title>Interactive English Class - Teacher LG</title>
+    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Fredoka+One&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #B0E0E6 0%, #E0F6FF 100%);
+            font-family: 'Fredoka One', cursive;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .decorative-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.5;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 10;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            animation: fadeIn 1s ease-in;
+        }
+
+        .main-title {
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 3rem;
+            color: #FF0000;
+            text-shadow: 3px 3px 0px #000000, 6px 6px 12px rgba(0, 0, 0, 0.3);
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            animation: titleBounce 1.5s ease-out;
+        }
+
+        .teacher-label {
+            display: inline-block;
+            background-color: white;
+            color: #9370DB;
+            padding: 10px 30px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .top-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .difficulty-selector {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 15px;
+            border: 2px solid #9370DB;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            font-family: 'Fredoka One', cursive;
+        }
+
+        .attendance-btn, .tools-btn {
+            padding: 10px 20px;
+            background-color: #FFD700;
+            border: 2px solid #000;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: 'Fredoka One', cursive;
+            transition: all 0.3s;
+        }
+
+        .attendance-btn:hover, .tools-btn:hover {
+            background-color: #FFC700;
+            transform: scale(1.05);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+
+        .nav-button {
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            background-color: #DDA0DD;
+            color: #333;
+            border: 3px solid #000;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Fredoka One', cursive;
+            touch-action: manipulation;
+        }
+
+        .nav-button:hover {
+            background-color: #BA55D3;
+            transform: scale(1.1);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .section {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            animation: slideIn 0.5s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section h2 {
+            color: #FF6B6B;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            font-family: 'Luckiest Guy', cursive;
+        }
+
+        .greeting-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .greeting-btn {
+            padding: 15px;
+            font-size: 1rem;
+            background-color: #FFE4B5;
+            border: 2px solid #FF8C00;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-family: 'Fredoka One', cursive;
+        }
+
+        .greeting-btn:hover {
+            background-color: #FF8C00;
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .weather-select, .level-select, .difficulty-level {
+            padding: 10px 15px;
+            font-size: 1rem;
+            border: 2px solid #9370DB;
+            border-radius: 10px;
+            background-color: #F0E6FF;
+            cursor: pointer;
+            font-family: 'Fredoka One', cursive;
+            margin: 10px 0;
+        }
+
+        .vibe-slider {
+            width: 100%;
+            max-width: 400px;
+            height: 10px;
+            margin: 20px auto;
+            cursor: pointer;
+        }
+
+        .vibe-display {
+            font-size: 4rem;
+            margin: 20px 0;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 15px;
+        }
+
+        .question-wheel {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: conic-gradient(#FF69B4 0deg 60deg, #FFB6C1 60deg 120deg, #FFC0CB 120deg 180deg, #FFB6C1 180deg 240deg, #FF69B4 240deg 300deg, #FFB6C1 300deg 360deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            margin: 20px auto;
+        }
+
+        .question-wheel.spinning {
+            animation: spin 2s linear;
+        }
+
+        .question-display {
+            background-color: #FFF0F5;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 1.3rem;
+            color: #333;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .difficulty-info {
+            background-color: #FFF9E6;
+            padding: 15px;
+            border-left: 4px solid #FFD700;
+            border-radius: 5px;
+            margin: 15px 0;
+            font-size: 0.95rem;
+        }
+
+        .game-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .team-section {
+            background-color: #F5F5F5;
+            padding: 20px;
+            border-radius: 15px;
+            border: 3px solid;
+        }
+
+        .team-1 { border-color: #FF6B6B; }
+        .team-2 { border-color: #4ECDC4; }
+
+        .team-score {
+            font-size: 2rem;
+            color: #FFD700;
+            margin: 10px 0;
+        }
+
+        .verb-input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #DDD;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: 'Fredoka One', cursive;
+        }
+
+        .verb-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .check-btn, .x-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .check-btn {
+            background-color: #90EE90;
+        }
+
+        .check-btn:hover:not(:disabled) {
+            background-color: #7FCD7F;
+        }
+
+        .x-btn {
+            background-color: #FFB6C1;
+        }
+
+        .x-btn:hover:not(:disabled) {
+            background-color: #FFA5B5;
+        }
+
+        .timer {
+            font-size: 2rem;
+            color: #FF0000;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .verbs-list {
+            background-color: white;
+            padding: 10px;
+            border-radius: 10px;
+            max-height: 150px;
+            overflow-y: auto;
+            margin: 10px 0;
+            font-size: 0.9rem;
+        }
+
+        .whiteboard-btn, .music-btn {
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            background-color: #FFD700;
+            border: 3px solid #000;
+            border-radius: 15px;
+            cursor: pointer;
+            margin: 10px;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-family: 'Fredoka One', cursive;
+        }
+
+        .whiteboard-btn:hover, .music-btn:hover {
+            background-color: #FFC700;
+            transform: scale(1.1);
+        }
+
+        #whiteboard-modal, #music-modal, #attendance-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        #whiteboard-modal.active, #music-modal.active, #attendance-modal.active {
+            display: flex;
+        }
+
+        #whiteboard-canvas {
+            background-color: white;
+            border: 3px solid #333;
+            border-radius: 10px;
+            cursor: crosshair;
+            max-width: 90vw;
+        }
+
+        .canvas-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .canvas-btn {
+            padding: 10px 20px;
+            background-color: #9370DB;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: 'Fredoka One', cursive;
+        }
+
+        .canvas-btn:hover {
+            background-color: #7B5BA8;
+        }
+
+        .music-player {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .attendance-container {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .attendance-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .student-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .student-item {
+            background: #F5F5F5;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #DDD;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .student-item.present {
+            background: #90EE90;
+            border-color: #228B22;
+        }
+
+        .student-item.absent {
+            background: #FFB6C1;
+            border-color: #DC143C;
+        }
+
+        .student-item input {
+            margin: 10px 0;
+            padding: 5px;
+            width: 100%;
+            border: 1px solid #DDD;
+            border-radius: 5px;
+            font-family: 'Fredoka One', cursive;
+        }
+
+        .attendance-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .attendance-actions button {
+            padding: 10px 20px;
+            background-color: #9370DB;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: 'Fredoka One', cursive;
+        }
+
+        .attendance-summary {
+            background: #FFF9E6;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .stat-box {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+
+        .stat-box.present { border-left-color: #228B22; }
+        .stat-box.absent { border-left-color: #DC143C; }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes titleBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .main-title { font-size: 2rem; }
+            .game-container, .student-list { grid-template-columns: 1fr; }
+            .top-controls { flex-direction: column; }
+            #whiteboard-canvas { width: 90vw; height: 60vh; }
+        }
+    </style>
 </head>
 <body>
-    <h1>Game with Attendance Tracker</h1>
+    <svg class="decorative-bg" viewBox="0 0 1200 800">
+        <g id="stars">
+            <polygon points="100,50 110,80 145,80 115,100 125,130 100,110 75,130 85,100 55,80 90,80" fill="#E6D700" opacity="0.6"/>
+            <polygon points="1100,100 1110,130 1145,130 1115,150 1125,180 1100,160 1075,180 1085,150 1055,130 1090,130" fill="#E6D700" opacity="0.6"/>
+        </g>
+        <g id="swirls">
+            <path d="M50,150 Q100,120 150,150 T250,150" stroke="#DDA0DD" stroke-width="3" fill="none" opacity="0.5"/>
+            <path d="M1100,300 Q1050,280 1000,300 T900,300" stroke="#DDA0DD" stroke-width="3" fill="none" opacity="0.5"/>
+        </g>
+    </svg>
 
-    <!-- Difficulty Selector -->
-    <label for="difficulty">Select Difficulty:</label>
-    <select id="difficulty">
-        <option value="easy">Easy</option>
-        <option value="medium">Medium</option>
-        <option value="hard">Hard</option>
-        <option value="expert">Expert</option>
-    </select>
+    <div class="content-wrapper">
+        <div class="header">
+            <div class="main-title">WELCOME TO OUR ENGLISH CLASS</div>
+            <div class="teacher-label">👨‍🏫 Teacher LG</div>
+        </div>
 
-    <button id="open-attendance-modal">Manage Attendance</button>
+        <div class="top-controls">
+            <select class="difficulty-selector" id="difficulty-level" onchange="changeDifficulty()">
+                <option value="easy">Easy 😊</option>
+                <option value="medium" selected>Medium 😐</option>
+                <option value="hard">Hard 😤</option>
+                <option value="expert">Expert 🔥</option>
+            </select>
+            <button class="attendance-btn" onclick="openAttendance()">📋 Attendance</button>
+        </div>
 
-    <!-- Attendance Tracker Modal -->
-    <div id="attendance-modal" style="display:none;">
-        <h2>Attendance Tracker</h2>
-        <div id="student-list"></div>
-        <button id="save-attendance">Save Attendance</button>
+        <div class="nav-container">
+            <button class="nav-button" onclick="showSection('greetings')">Greetings</button>
+            <button class="nav-button" onclick="showSection('warmup')">Warm-up</button>
+            <button class="nav-button" onclick="showSection('review')">Review</button>
+            <button class="nav-button" onclick="showSection('learning')">Learning</button>
+            <button class="nav-button" onclick="showSection('exit')">Exit</button>
+        </div>
+
+        <div style="text-align: center; margin: 15px 0;">
+            <button class="whiteboard-btn" onclick="openWhiteboard()">✏️ Whiteboard</button>
+            <button class="music-btn" onclick="openMusic()">🎵 Music</button>
+        </div>
+
+        <!-- GREETINGS SECTION -->
+        <div class="section active" id="greetings">
+            <h2>🎉 Greetings</h2>
+            <div class="greeting-buttons">
+                <button class="greeting-btn" onclick="showGreeting('Hello!')">Hello 👋</button>
+                <button class="greeting-btn" onclick="showGreeting('Hi!')">Hi 😊</button>
+                <button class="greeting-btn" onclick="showGreeting('Good Morning!')">Good Morning ☀️</button>
+                <button class="greeting-btn" onclick="showGreeting('Good Afternoon!')">Good Afternoon 🌤️</button>
+                <button class="greeting-btn" onclick="showGreeting('Good Evening!')">Good Evening 🌙</button>
+            </div>
+            <div id="greeting-result" style="margin-top: 20px; font-size: 1.5rem; color: #FF6B6B;"></div>
+
+            <div style="margin-top: 30px;">
+                <h3 style="color: #9370DB;">Weather Check ☁️</h3>
+                <select class="weather-select" onchange="updateWeather(this.value)">
+                    <option value="">Select weather...</option>
+                    <option value="sunny">☀️ Sunny</option>
+                    <option value="windy">💨 Windy</option>
+                    <option value="rainy">🌧️ Rainy</option>
+                    <option value="cloudy">☁️ Cloudy</option>
+                </select>
+                <div id="weather-emoji" style="font-size: 2.5rem; margin-top: 10px;"></div>
+            </div>
+
+            <div style="margin-top: 30px;">
+                <h3 style="color: #9370DB;">Vibe Check 😊 (1-10)</h3>
+                <input type="range" class="vibe-slider" id="vibe-slider" min="1" max="10" value="5" onchange="updateVibe(this.value)">
+                <div class="vibe-display" id="vibe-emoji">😊</div>
+            </div>
+        </div>
+
+        <!-- WARM-UP SECTION -->
+        <div class="section" id="warmup">
+            <h2>🏃 Warm-up</h2>
+            <div class="difficulty-info" id="warmup-difficulty">
+                📊 Difficulty: <strong>Medium</strong> - Standard warm-up exercises
+            </div>
+            <select class="level-select" onchange="loadWarmupLevel(this.value)">
+                <option value="">Choose a level...</option>
+                <option value="1">Level 1</option>
+                <option value="2">Level 2</option>
+                <option value="3">Level 3</option>
+                <option value="4">Level 4</option>
+            </select>
+            <div class="video-container">
+                <iframe id="warmup-video" src="" allowfullscreen></iframe>
+            </div>
+        </div>
+
+        <!-- REVIEW SECTION -->
+        <div class="section" id="review">
+            <h2>🎯 Review</h2>
+            <div class="difficulty-info" id="review-difficulty">
+                📊 Difficulty: <strong>Medium</strong> - Standard comprehension questions
+            </div>
+            <p style="margin: 20px 0;">Click the wheel to reveal a question!</p>
+            <div style="text-align: center;">
+                <div class="question-wheel" onclick="spinWheel()"></div>
+                <div class="question-display" id="question-display">Click the wheel!</div>
+            </div>
+        </div>
+
+        <!-- LEARNING SECTION -->
+        <div class="section" id="learning">
+            <h2>📚 Learning</h2>
+            <div class="difficulty-info" id="learning-difficulty">
+                📊 Difficulty: <strong>Medium</strong> - Standard educational content
+            </div>
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/4c6FyuetSVo" allowfullscreen></iframe>
+            </div>
+        </div>
+
+        <!-- EXIT SECTION -->
+        <div class="section" id="exit">
+            <h2>🎮 Verb Game</h2>
+            <div class="difficulty-info" id="game-difficulty">
+                📊 Difficulty: <strong>Medium</strong> - 90 seconds, Standard verb list
+            </div>
+            
+            <div style="text-align: center; margin: 20px 0;">
+                <div class="timer" id="timer">1:30</div>
+                <button class="nav-button" onclick="startGameTimer()" style="background-color: #90EE90;">▶️ Start</button>
+                <button class="nav-button" onclick="resetGameTimer()" style="background-color: #FFB6C1;">🔄 Reset</button>
+            </div>
+
+            <div class="game-container">
+                <div class="team-section team-1">
+                    <div style="font-size: 1.5rem;">🔴 Team 1</div>
+                    <div class="team-score" id="team1-score">0</div>
+                    <input type="text" class="verb-input" id="team1-verb" placeholder="Enter a verb..." disabled>
+                    <div class="verb-actions">
+                        <button class="check-btn" onclick="validateVerb('team1')" disabled>✅</button>
+                        <button class="x-btn" onclick="clearVerb('team1')" disabled>❌</button>
+                    </div>
+                    <div class="verbs-list" id="team1-verbs"></div>
+                </div>
+
+                <div class="team-section team-2">
+                    <div style="font-size: 1.5rem;">🔵 Team 2</div>
+                    <div class="team-score" id="team2-score">0</div>
+                    <input type="text" class="verb-input" id="team2-verb" placeholder="Enter a verb..." disabled>
+                    <div class="verb-actions">
+                        <button class="check-btn" onclick="validateVerb('team2')" disabled>✅</button>
+                        <button class="x-btn" onclick="clearVerb('team2')" disabled>❌</button>
+                    </div>
+                    <div class="verbs-list" id="team2-verbs"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Whiteboard Modal -->
+    <div id="whiteboard-modal">
+        <div>
+            <canvas id="whiteboard-canvas" width="800" height="600"></canvas>
+            <div class="canvas-controls">
+                <input type="color" id="pen-color" value="#000000">
+                <input type="range" id="pen-size" min="1" max="20" value="3">
+                <button class="canvas-btn" onclick="clearCanvas()">Clear</button>
+                <button class="canvas-btn" onclick="closeWhiteboard()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Music Modal -->
+    <div id="music-modal">
+        <div class="music-player">
+            <h2>🎵 Music</h2>
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/yBanUW7ja8M" frameborder="0" allowfullscreen></iframe>
+            <br><br>
+            <button class="nav-button" onclick="closeMusic()">Close</button>
+        </div>
+    </div>
+
+    <!-- Attendance Modal -->
+    <div id="attendance-modal">
+        <div class="attendance-container">
+            <div class="attendance-header">
+                <h2 style="color: #FF6B6B; margin-bottom: 10px;">📋 Class Attendance</h2>
+                <p style="color: #666;">Click students to mark present/absent</p>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label style="font-weight: bold; color: #333;">Add New Student:</label>
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <input type="text" id="student-name-input" placeholder="Enter student name..." style="flex: 1; padding: 10px; border: 2px solid #9370DB; border-radius: 10px; font-family: 'Fredoka One', cursive;">
+                    <button onclick="addStudent()" style="padding: 10px 20px; background-color: #90EE90; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-family: 'Fredoka One', cursive;">Add</button>
+                </div>
+            </div>
+
+            <div class="student-list" id="student-list"></div>
+
+            <div class="attendance-summary">
+                <div style="font-size: 1.2rem; font-weight: bold; margin-bottom: 10px;">📊 Attendance Summary</div>
+                <div class="stats-grid">
+                    <div class="stat-box present">
+                        <div class="stat-value" id="present-count">0</div>
+                        <div class="stat-label">Present</div>
+                    </div>
+                    <div class="stat-box absent">
+                        <div class="stat-value" id="absent-count">0</div>
+                        <div class="stat-label">Absent</div>
+                    </div>
+                </div>
+                <div style="margin-top: 10px; font-size: 0.9rem; color: #666;">
+                    <strong>Total Students:</strong> <span id="total-students">0</span>
+                </div>
+            </div>
+
+            <div class="attendance-actions">
+                <button onclick="markAllPresent()">✅ Mark All Present</button>
+                <button onclick="markAllAbsent()">❌ Mark All Absent</button>
+                <button onclick="saveAttendance()">💾 Save Session</button>
+                <button onclick="closeAttendance()">Close</button>
+            </div>
+        </div>
     </div>
 
     <script>
-        const attendanceData = JSON.parse(localStorage.getItem('attendanceData')) || {};
-        const difficultyLevels = {
-            easy: { gameTime: 30, verbList: ['run', 'jump'], questionComplexity: 1 },
-            medium: { gameTime: 20, verbList: ['run', 'jump', 'swim'], questionComplexity: 2 },
-            hard: { gameTime: 15, verbList: ['run', 'jump', 'swim', 'fly'], questionComplexity: 3 },
-            expert: { gameTime: 10, verbList: ['run', 'jump', 'swim', 'fly', 'teleport'], questionComplexity: 4 }
+        // ========== SETTINGS & STATE ==========
+        let currentDifficulty = 'medium';
+        let attendanceData = {};
+        let gameActive = false;
+        let timeRemaining = 90;
+        let team1Verbs = [];
+        let team2Verbs = [];
+        let isDrawing = false;
+        let canvas, ctx;
+
+        // ========== DIFFICULTY LEVELS ==========
+        const difficultySettings = {
+            easy: {
+                gameTime: 120,
+                verbCount: 30,
+                verbs: ['run', 'walk', 'jump', 'sit', 'stand', 'eat', 'drink', 'play', 'read', 'write', 'sing', 'dance', 'go', 'come', 'see', 'hear', 'like', 'love', 'want', 'need', 'have', 'be', 'make', 'take', 'give', 'ask', 'tell', 'show', 'find', 'feel'],
+                reviewQuestions: ['What was the main character\'s name?', 'What color was the cat?', 'Did the character like ice cream?', 'How many friends did they have?', 'What did they eat?'],
+                descriptionWarmup: '😊 Easy - Beginner friendly exercises',
+                descriptionReview: '😊 Easy - Simple comprehension questions',
+                descriptionLearning: '😊 Easy - Basic educational content',
+                descriptionGame: '😊 Easy - 2 minutes, Simple verbs'
+            },
+            medium: {
+                gameTime: 90,
+                verbCount: 65,
+                verbs: ['run', 'walk', 'talk', 'sing', 'dance', 'jump', 'sit', 'stand', 'eat', 'drink', 'sleep', 'wake', 'play', 'work', 'study', 'read', 'write', 'draw', 'paint', 'cook', 'clean', 'watch', 'listen', 'speak', 'think', 'feel', 'love', 'like', 'hate', 'want', 'need', 'have', 'be', 'go', 'come', 'stay', 'leave', 'arrive', 'depart', 'start', 'stop', 'begin', 'end', 'continue', 'break', 'finish', 'complete', 'create', 'make', 'build', 'destroy', 'open', 'close', 'push', 'pull', 'throw', 'catch', 'give', 'take', 'send', 'receive', 'ask', 'answer', 'help', 'teach', 'learn'],
+                reviewQuestions: ['What was the main character\'s name?', 'Where did the story take place?', 'What was the problem in the story?', 'How did the character solve the problem?', 'What did you learn from this story?', 'Who was the antagonist?', 'What was the climax of the story?'],
+                descriptionWarmup: '😐 Medium - Standard warm-up exercises',
+                descriptionReview: '😐 Medium - Standard comprehension questions',
+                descriptionLearning: '😐 Medium - Standard educational content',
+                descriptionGame: '😐 Medium - 1:30 minutes, Standard verbs'
+            },
+            hard: {
+                gameTime: 60,
+                verbCount: 100,
+                verbs: ['run', 'walk', 'talk', 'sing', 'dance', 'jump', 'sit', 'stand', 'eat', 'drink', 'sleep', 'wake', 'play', 'work', 'study', 'read', 'write', 'draw', 'paint', 'cook', 'clean', 'watch', 'listen', 'speak', 'think', 'feel', 'love', 'like', 'hate', 'want', 'need', 'have', 'be', 'go', 'come', 'stay', 'leave', 'arrive', 'depart', 'start', 'stop', 'begin', 'end', 'continue', 'break', 'finish', 'complete', 'create', 'make', 'build', 'destroy', 'open', 'close', 'push', 'pull', 'throw', 'catch', 'give', 'take', 'send', 'receive', 'ask', 'answer', 'help', 'teach', 'learn', 'organize', 'arrange', 'plan', 'prepare', 'manage', 'develop', 'improve', 'increase', 'decrease', 'grow', 'establish', 'maintain', 'achieve', 'accomplish', 'understand', 'recognize', 'identify', 'analyze', 'interpret', 'express', 'communicate', 'describe', 'explain', 'demonstrate', 'perform', 'execute', 'implement', 'establish', 'conduct', 'operate', 'maintain', 'supervise', 'coordinate', 'cooperate', 'collaborate', 'participate', 'contribute', 'support', 'encourage', 'inspire', 'motivate'],
+                reviewQuestions: ['What was the main character\'s name?', 'Where did the story take place?', 'What was the problem in the story?', 'How did the character solve the problem?', 'What did you learn from this story?', 'Who was the antagonist?', 'What was the climax of the story?', 'What was the theme?', 'How did the story end?', 'What emotions did you feel?'],
+                descriptionWarmup: '😤 Hard - Advanced warm-up exercises',
+                descriptionReview: '😤 Hard - Complex comprehension questions',
+                descriptionLearning: '😤 Hard - Advanced educational content',
+                descriptionGame: '😤 Hard - 1 minute, Advanced verbs'
+            },
+            expert: {
+                gameTime: 45,
+                verbCount: 150,
+                verbs: ['run', 'walk', 'talk', 'sing', 'dance', 'jump', 'sit', 'stand', 'eat', 'drink', 'sleep', 'wake', 'play', 'work', 'study', 'read', 'write', 'draw', 'paint', 'cook', 'clean', 'watch', 'listen', 'speak', 'think', 'feel', 'love', 'like', 'hate', 'want', 'need', 'have', 'be', 'go', 'come', 'stay', 'leave', 'arrive', 'depart', 'start', 'stop', 'begin', 'end', 'continue', 'break', 'finish', 'complete', 'create', 'make', 'build', 'destroy', 'open', 'close', 'push', 'pull', 'throw', 'catch', 'give', 'take', 'send', 'receive', 'ask', 'answer', 'help', 'teach', 'learn', 'organize', 'arrange', 'plan', 'prepare', 'manage', 'develop', 'improve', 'increase', 'decrease', 'grow', 'establish', 'maintain', 'achieve', 'accomplish', 'understand', 'recognize', 'identify', 'analyze', 'interpret', 'express', 'communicate', 'describe', 'explain', 'demonstrate', 'perform', 'execute', 'implement', 'conduct', 'operate', 'supervise', 'coordinate', 'cooperate', 'collaborate', 'participate', 'contribute', 'support', 'encourage', 'inspire', 'motivate', 'persevere', 'perseverate', 'facilitate', 'accommodate', 'speculate', 'specialize', 'hypothesize', 'synthesize', 'standardize', 'scrutinize', 'stabilize', 'stimulate', 'vindicate', 'validate', 'vindicate', 'vaporize', 'verbalize', 'verify', 'vindicate', 'vitiate', 'vocalize', 'volatilize', 'volunteer', 'wade', 'wager', 'waive', 'wallow', 'wander', 'wane', 'warm', 'warrant', 'waste', 'watch', 'water', 'waive'],
+                reviewQuestions: ['What was the main character\'s name?', 'Where did the story take place?', 'What was the problem in the story?', 'How did the character solve the problem?', 'What did you learn from this story?', 'Who was the antagonist?', 'What was the climax of the story?', 'What was the theme?', 'How did the story end?', 'What emotions did you feel?', 'Analyze the character development?', 'What would you have done differently?'],
+                descriptionWarmup: '🔥 Expert - Challenge yourself with advanced exercises',
+                descriptionReview: '🔥 Expert - Critical thinking questions',
+                descriptionLearning: '🔥 Expert - Advanced professional content',
+                descriptionGame: '🔥 Expert - 45 seconds, Complex verbs'
+            }
         };
 
-        document.getElementById('difficulty').addEventListener('change', function () {
-            const selectedDifficulty = this.value;
-            // Adjust game settings based on difficulty
-            adjustGameSettings(difficultyLevels[selectedDifficulty]);
-        });
-
-        function adjustGameSettings(settings) {
-            // Logic to adjust game time, verb lists, etc.
-            console.log('Game settings adjusted:', settings);
+        function changeDifficulty() {
+            currentDifficulty = document.getElementById('difficulty-level').value;
+            updateDifficultyDisplay();
+            alert(`Difficulty changed to: ${currentDifficulty.toUpperCase()}`);
         }
 
-        document.getElementById('open-attendance-modal').addEventListener('click', function () {
-            document.getElementById('attendance-modal').style.display = 'block';
+        function updateDifficultyDisplay() {
+            const settings = difficultySettings[currentDifficulty];
+            document.getElementById('warmup-difficulty').innerHTML = `📊 Difficulty: <strong>${currentDifficulty.charAt(0).toUpperCase() + currentDifficulty.slice(1)}</strong> - ${settings.descriptionWarmup}`;
+            document.getElementById('review-difficulty').innerHTML = `📊 Difficulty: <strong>${currentDifficulty.charAt(0).toUpperCase() + currentDifficulty.slice(1)}</strong> - ${settings.descriptionReview}`;
+            document.getElementById('learning-difficulty').innerHTML = `📊 Difficulty: <strong>${currentDifficulty.charAt(0).toUpperCase() + currentDifficulty.slice(1)}</strong> - ${settings.descriptionLearning}`;
+            document.getElementById('game-difficulty').innerHTML = `📊 Difficulty: <strong>${currentDifficulty.charAt(0).toUpperCase() + currentDifficulty.slice(1)}</strong> - ${settings.descriptionGame}`;
+        }
+
+        // ========== SECTION NAVIGATION ==========
+        function showSection(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        // ========== GREETINGS ==========
+        function showGreeting(greeting) {
+            document.getElementById('greeting-result').textContent = greeting;
+        }
+
+        function updateWeather(weather) {
+            const emojis = { 'sunny': '☀️', 'windy': '💨', 'rainy': '🌧️', 'cloudy': '☁️' };
+            document.getElementById('weather-emoji').textContent = emojis[weather] || '';
+        }
+
+        function updateVibe(value) {
+            const emojis = ['😢', '😢', '😐', '😐', '😊', '😊', '😄', '😄', '😄', '🤩'];
+            document.getElementById('vibe-emoji').textContent = emojis[value - 1];
+        }
+
+        // ========== WARM-UP ==========
+        function loadWarmupLevel(level) {
+            const ids = { '1': '_dPkuOEcs28', '2': '_dPkuOEcs28', '3': '_dPkuOEcs28', '4': '_dPkuOEcs28' };
+            if (level) document.getElementById('warmup-video').src = `https://www.youtube.com/embed/${ids[level]}`;
+        }
+
+        // ========== REVIEW ==========
+        function spinWheel() {
+            const questions = difficultySettings[currentDifficulty].reviewQuestions;
+            const wheel = document.querySelector('.question-wheel');
+            wheel.classList.remove('spinning');
+            setTimeout(() => {
+                wheel.classList.add('spinning');
+                setTimeout(() => {
+                    wheel.classList.remove('spinning');
+                    document.getElementById('question-display').textContent = questions[Math.floor(Math.random() * questions.length)];
+                }, 2000);
+            }, 50);
+        }
+
+        // ========== VERB GAME ==========
+        function startGameTimer() {
+            if (gameActive) return;
+            gameActive = true;
+            timeRemaining = difficultySettings[currentDifficulty].gameTime;
+            team1Verbs = [];
+            team2Verbs = [];
+            document.getElementById('team1-score').textContent = '0';
+            document.getElementById('team2-score').textContent = '0';
+            document.getElementById('team1-verbs').innerHTML = '';
+            document.getElementById('team2-verbs').innerHTML = '';
+
+            document.querySelectorAll('.verb-input').forEach(el => el.disabled = false);
+            document.querySelectorAll('.check-btn, .x-btn').forEach(el => el.disabled = false);
+            document.getElementById('team1-verb').focus();
+
+            const gameInterval = setInterval(() => {
+                timeRemaining--;
+                const m = Math.floor(timeRemaining / 60);
+                const s = timeRemaining % 60;
+                document.getElementById('timer').textContent = `${m}:${s.toString().padStart(2, '0')}`;
+                if (timeRemaining === 0) {
+                    clearInterval(gameInterval);
+                    gameActive = false;
+                    document.querySelectorAll('.verb-input, .check-btn, .x-btn').forEach(el => el.disabled = true);
+                    alert(`⏰ Time's up!\n\nTeam 1: ${document.getElementById('team1-score').textContent} points\nTeam 2: ${document.getElementById('team2-score').textContent} points`);
+                }
+            }, 1000);
+        }
+
+        function resetGameTimer() {
+            gameActive = false;
+            const difficulty = difficultySettings[currentDifficulty];
+            timeRemaining = difficulty.gameTime;
+            const m = Math.floor(timeRemaining / 60);
+            const s = timeRemaining % 60;
+            document.getElementById('timer').textContent = `${m}:${s.toString().padStart(2, '0')}`;
+            document.getElementById('team1-score').textContent = '0';
+            document.getElementById('team2-score').textContent = '0';
+            document.getElementById('team1-verbs').innerHTML = '';
+            document.getElementById('team2-verbs').innerHTML = '';
+            team1Verbs = [];
+            team2Verbs = [];
+            document.querySelectorAll('.verb-input, .check-btn, .x-btn').forEach(el => el.disabled = true);
+        }
+
+        function validateVerb(team) {
+            const inputId = `${team}-verb`;
+            const verb = document.getElementById(inputId).value.toLowerCase().trim();
+            if (!verb) { alert('Enter a verb!'); return; }
+
+            const verbs = difficultySettings[currentDifficulty].verbs;
+            if (!verbs.includes(verb)) { alert('Invalid verb!'); document.getElementById(inputId).value = ''; return; }
+
+            const list = team === 'team1' ? team1Verbs : team2Verbs;
+            if (list.includes(verb)) { alert('Already used!'); document.getElementById(inputId).value = ''; return; }
+
+            list.push(verb);
+            const scoreId = `${team}-score`;
+            document.getElementById(scoreId).textContent = parseInt(document.getElementById(scoreId).textContent) + 1;
+            document.getElementById(`${team}-verbs`).innerHTML += `<span style="display: inline-block; background: ${team === 'team1' ? '#FFE4B5' : '#B0E0E6'}; padding: 5px 10px; margin: 5px; border-radius: 5px;">${verb}</span>`;
+            document.getElementById(inputId).value = '';
+            document.getElementById(inputId).focus();
+        }
+
+        function clearVerb(team) {
+            document.getElementById(`${team}-verb`).value = '';
+        }
+
+        // ========== ATTENDANCE ==========
+        function openAttendance() {
+            document.getElementById('attendance-modal').classList.add('active');
+            renderStudents();
+        }
+
+        function closeAttendance() {
+            document.getElementById('attendance-modal').classList.remove('active');
+        }
+
+        function addStudent() {
+            const input = document.getElementById('student-name-input');
+            const name = input.value.trim();
+            if (name) {
+                attendanceData[name] = 'unmarked';
+                input.value = '';
+                renderStudents();
+            }
+        }
+
+        function toggleAttendance(name) {
+            const states = { 'unmarked': 'present', 'present': 'absent', 'absent': 'unmarked' };
+            attendanceData[name] = states[attendanceData[name]];
+            renderStudents();
+        }
+
+        function renderStudents() {
+            const list = document.getElementById('student-list');
+            list.innerHTML = '';
+            Object.keys(attendanceData).forEach(name => {
+                const state = attendanceData[name];
+                const item = document.createElement('div');
+                item.className = `student-item ${state}`;
+                item.textContent = name;
+                item.onclick = () => toggleAttendance(name);
+                list.appendChild(item);
+            });
+            updateAttendanceSummary();
+        }
+
+        function updateAttendanceSummary() {
+            const present = Object.values(attendanceData).filter(s => s === 'present').length;
+            const absent = Object.values(attendanceData).filter(s => s === 'absent').length;
+            const total = Object.keys(attendanceData).length;
+            document.getElementById('present-count').textContent = present;
+            document.getElementById('absent-count').textContent = absent;
+            document.getElementById('total-students').textContent = total;
+        }
+
+        function markAllPresent() {
+            Object.keys(attendanceData).forEach(name => attendanceData[name] = 'present');
+            renderStudents();
+        }
+
+        function markAllAbsent() {
+            Object.keys(attendanceData).forEach(name => attendanceData[name] = 'absent');
+            renderStudents();
+        }
+
+        function saveAttendance() {
+            const data = JSON.stringify(attendanceData);
+            localStorage.setItem('attendanceData_' + new Date().toISOString().split('T')[0], data);
+            alert('✅ Attendance saved successfully!');
+        }
+
+        // ========== WHITEBOARD ==========
+        function openWhiteboard() {
+            document.getElementById('whiteboard-modal').classList.add('active');
+            canvas = document.getElementById('whiteboard-canvas');
+            ctx = canvas.getContext('2d');
+            setupCanvas();
+        }
+
+        function closeWhiteboard() {
+            document.getElementById('whiteboard-modal').classList.remove('active');
+        }
+
+        function setupCanvas() {
+            canvas.onmousedown = () => { isDrawing = true; ctx.beginPath(); };
+            canvas.onmousemove = (e) => {
+                if (!isDrawing) return;
+                const rect = canvas.getBoundingClientRect();
+                ctx.strokeStyle = document.getElementById('pen-color').value;
+                ctx.lineWidth = document.getElementById('pen-size').value;
+                ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+                ctx.stroke();
+            };
+            canvas.onmouseup = () => { isDrawing = false; };
+        }
+
+        function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+
+        // ========== MUSIC ==========
+        function openMusic() { document.getElementById('music-modal').classList.add('active'); }
+        function closeMusic() { document.getElementById('music-modal').classList.remove('active'); }
+
+        // ========== INITIALIZE ==========
+        window.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && gameActive) {
+                const activeInput = document.activeElement;
+                if (activeInput.id === 'team1-verb') validateVerb('team1');
+                else if (activeInput.id === 'team2-verb') validateVerb('team2');
+            }
         });
 
-        document.getElementById('save-attendance').addEventListener('click', function () {
-            // Save attendance data logic here
-            localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
-            alert('Attendance saved!');
-        });
+        updateVibe(5);
+        updateDifficultyDisplay();
+        
+        // Load initial attendance data
+        const today = new Date().toISOString().split('T')[0];
+        const saved = localStorage.getItem('attendanceData_' + today);
+        if (saved) attendanceData = JSON.parse(saved);
     </script>
 </body>
 </html>
