@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive English Class Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Fredoka+One&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #b8e8f1;
+            --accent-purple: #d1c4e9;
+            --text-red: #ff5c5c;
+            --btn-border: #2d3436;
+        }
+
+        body, html {
+            margin: 0; padding: 0; height: 100%;
+            font-family: 'Fredoka One', cursive;
+            background-color: var(--bg-color);
+            overflow: hidden;
+        }
+
+        /* --- Layout --- */
+        .slide-container {
+            width: 100vw; height: 100vh;
+            display: flex; flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px; box-sizing: border-box;
+            position: relative;
+        }
+
+        #main-display {
+            flex-grow: 1; width: 100%;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            z-index: 5;
+        }
+
+        /* --- Utility Buttons (Fixed) --- */
+        .top-tools {
+            position: absolute; top: 20px; right: 20px;
+            display: flex; gap: 10px; z-index: 100;
+        }
+
+        .tool-btn {
+            background: white; border: 2px solid var(--btn-border);
+            border-radius: 50%; width: 50px; height: 50px;
+            cursor: pointer; font-size: 1.5rem;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        /* --- Whiteboard Overlay --- */
+        #whiteboard {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 50; display: none;
+            cursor: crosshair;
+        }
+
+        /* --- Styling Elements --- */
+        h1 {
+            font-family: 'Luckiest Guy', cursive;
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            color: var(--text-red);
+            -webkit-text-stroke: 2px var(--btn-border);
+            filter: drop-shadow(4px 4px 0px var(--btn-border));
+            text-align: center; margin: 10px;
+        }
+
+        .game-area {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px; border-radius: 20px;
+            border: 4px solid var(--btn-border);
+            max-width: 800px; width: 90%;
+            text-align: center;
+        }
+
+        /* --- Buttons --- */
+        .nav-buttons { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+        .nav-btn {
+            background-color: var(--accent-purple);
+            border: 3px solid var(--btn-border);
+            padding: 12px 20px; border-radius: 15px;
+            font-family: 'Fredoka One', cursive;
+            cursor: pointer; box-shadow: 0 4px 0px var(--btn-border);
+        }
+        .nav-btn:active { transform: translateY(4px); box-shadow: none; }
+
+        /* --- Wheel / Games --- */
+        .wheel-container {
+            width: 300px; height: 300px; border-radius: 50%;
+            border: 5px solid var(--btn-border);
+            position: relative; transition: transform 3s cubic-bezier(0.1, 0, 0, 1);
+            background: conic-gradient(#ff7675 0% 33%, #fdcb6e 33% 66%, #55efc4 66% 100%);
+        }
+
+        iframe { border-radius: 15px; border: 3px solid var(--btn-border); }
+    </style>
+</head>
+<body>
+
+    <!-- Utility Tools -->
+    <div class="top-tools">
+        <button class="tool-btn" onclick="toggleWhiteboard()" title="Whiteboard">🖍️</button>
+        <button class="tool-btn" onclick="toggleMusic()" title="Toggle Music">🎵</button>
+    </div>
+
+    <!-- Hidden Audio (Music Tool) -->
+    <div id="music-player" style="display:none">
+        <iframe id="yt-player" width="1" height="1" src="https://www.youtube.com/embed/yBanUW7ja8M?enablejsapi=1&autoplay=1&loop=1&playlist=yBanUW7ja8M" allow="autoplay"></iframe>
+    </div>
+
+    <!-- Whiteboard Canvas -->
+    <canvas id="whiteboard"></canvas>
+
+    <div class="slide-container">
+        <div id="main-display">
+            <!-- Initial Home Content -->
+            <h1 id="header-text">WELCOME TO<br>OUR ENGLISH CLASS</h1>
+            <div id="content-body">
+                <div class="teacher-badge" style="background:white; padding:10px 30px; border-radius:50px; border:2px solid black;">Teacher LG</div>
+            </div>
+        </div>
+
+        <!-- Main Navigation -->
+        <div class="nav-buttons">
+            <button class="nav-btn" onclick="goGreetings()">Greetings</button>
+            <button class="nav-btn" onclick="goWarmup()">Warm-up</button>
+            <button class="nav-btn" onclick="goReview()">Review</button>
+            <button class="nav-btn" onclick="goLearning()">Learning</button>
+            <button class="nav-btn" onclick="goExit()">Exit</button>
+        </div>
+    </div>
+
+    <script>
+        const content = document.getElementById('content-body');
+        const header = document.getElementById('header-text');
+
+        // --- SECTION: GREETINGS ---
+        function goGreetings() {
+            header.innerText = "GREETINGS";
+            content.innerHTML = `
+                <div class="nav-buttons">
+                    <button class="nav-btn" onclick="alert('Hello Class!')">1. Say Hello</button>
+                    <button class="nav-btn" onclick="weatherCheck()">2. Weather Check</button>
+                    <button class="nav-btn" onclick="vibeCheck()">3. Vibe Check</button>
+                </div>
+                <div id="sub-content" style="margin-top:20px"></div>
+            `;
+        }
+
+        function weatherCheck() {
+            document.getElementById('sub-content').innerHTML = `
+                <h3>How is the weather?</h3>
+                <button class="nav-btn" onclick="alert('It is Sunny! ☀️')">Sunny ☀️</button>
+                <button class="nav-btn" onclick="alert('It is Windy! 💨')">Windy 💨</button>
+                <button class="nav-btn" onclick="alert('It is Rainy! 🌧️')">Rainy 🌧️</button>
+                <button class="nav-btn" onclick="alert('It is Cloudy! ☁️')">Cloudy ☁️</button>
+            `;
+        }
+
+        function vibeCheck() {
+            document.getElementById('sub-content').innerHTML = `
+                <h3>Vibe Check (1-10)</h3>
+                <input type="range" min="1" max="10" value="5" id="vibeRange" oninput="updateVibe(this.value)">
+                <h1 id="vibeEmoji">😐</h1>
+                <p>Score: <span id="vibeVal">5</span></p>
+            `;
+        }
+
+        function updateVibe(val) {
+            const emojis = ["😫","😢","😕","😐","🙂","😊","😁","🥳","🤩","🔥"];
+            document.getElementById('vibeVal').innerText = val;
+            document.getElementById('vibeEmoji').innerText = emojis[val-1];
+        }
+
+        // --- SECTION: WARM UP ---
+        function goWarmup() {
+            header.innerText = "WARM-UP ACTIVITY";
+            content.innerHTML = `
+                <p>Complete Levels 1 to 4!</p>
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/_dPkuOEcs28?start=0&end=240" title="Warmup"></iframe>
+            `;
+        }
+
+        // --- SECTION: REVIEW (Wheel) ---
+        function goReview() {
+            header.innerText = "STORY RECALL WHEEL";
+            content.innerHTML = `
+                <div class="wheel-container" id="wheel"></div>
+                <button class="nav-btn" style="margin-top:20px" onclick="spinWheel()">SPIN THE WHEEL</button>
+                <h3 id="question-text"></h3>
+            `;
+        }
+
+        function spinWheel() {
+            const questions = ["Who was the main character?", "Where did the story happen?", "What was the problem?"];
+            const wheel = document.getElementById('wheel');
+            const deg = Math.floor(5000 + Math.random() * 5000);
+            wheel.style.transform = `rotate(${deg}deg)`;
+            setTimeout(() => {
+                document.getElementById('question-text').innerText = questions[Math.floor(Math.random()*3)];
+            }, 3000);
+        }
+
+        // --- SECTION: LEARNING ---
+        function goLearning() {
+            header.innerText = "ACTION VERBS";
+            content.innerHTML = `
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/4c6FyuetSVo" title="Learning"></iframe>
+            `;
+        }
+
+        // --- SECTION: EXIT (Team Game) ---
+        let team1Score = 0; let team2Score = 0;
+        function goExit() {
+            header.innerText = "VERB CHALLENGE";
+            content.innerHTML = `
+                <div class="game-area">
+                    <h2>Time Left: <span id="timer">90</span>s</h2>
+                    <div style="display:flex; justify-content:space-around;">
+                        <div>Team A: $<span id="score1">0</span><br><button onclick="addPoint(1, true)">✅</button><button onclick="addPoint(1, false)">❌</button></div>
+                        <div>Team B: $<span id="score2">0</span><br><button onclick="addPoint(2, true)">✅</button><button onclick="addPoint(2, false)">❌</button></div>
+                    </div>
+                    <button class="nav-btn" onclick="startTimer()">START GAME</button>
+                </div>
+            `;
+        }
+
+        function addPoint(team, isCorrect) {
+            if(!isCorrect) return;
+            if(team === 1) team1Score += 10; else team2Score += 10;
+            document.getElementById('score1').innerText = team1Score;
+            document.getElementById('score2').innerText = team2Score;
+        }
+
+        function startTimer() {
+            let time = 90;
+            const interval = setInterval(() => {
+                time--;
+                document.getElementById('timer').innerText = time;
+                if(time <= 0) { clearInterval(interval); alert("Time's Up!"); }
+            }, 1000);
+        }
+
+        // --- WHITEBOARD LOGIC ---
+        const canvas = document.getElementById('whiteboard');
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+
+        function toggleWhiteboard() {
+            canvas.style.display = canvas.style.display === 'none' ? 'block' : 'none';
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        canvas.addEventListener('mousedown', () => drawing = true);
+        canvas.addEventListener('mouseup', () => { drawing = false; ctx.beginPath(); });
+        canvas.addEventListener('mousemove', draw);
+
+        function draw(e) {
+            if (!drawing) return;
+            ctx.lineWidth = 5; ctx.lineCap = 'round'; ctx.strokeStyle = 'red';
+            ctx.lineTo(e.clientX, e.clientY);
+            ctx.stroke();
+        }
+
+        // --- MUSIC LOGIC ---
+        let musicPlaying = true;
+        function toggleMusic() {
+            const player = document.getElementById('yt-player');
+            musicPlaying = !musicPlaying;
+            player.src = musicPlaying ? "https://www.youtube.com/embed/yBanUW7ja8M?enablejsapi=1&autoplay=1" : "";
+        }
+    </script>
+</body>
+</html>

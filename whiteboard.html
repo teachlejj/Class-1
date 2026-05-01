@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classroom Whiteboard</title>
+    <style>
+        :root {
+            --bg-purple: #f3f0ff;
+            --border-purple: #6c5ce7;
+            --toolbar-color: #a29bfe;
+        }
+
+        body {
+            background-color: var(--bg-purple);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: 'Segoe UI', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Toolbar Styling */
+        .toolbar {
+            background-color: var(--toolbar-color);
+            padding: 15px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        .marker {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid white;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .marker:hover { transform: scale(1.2); }
+        .marker.active { border-color: #2d3436; transform: scale(1.1); }
+
+        /* Canvas Styling */
+        #whiteboard {
+            background-color: white;
+            cursor: crosshair;
+            margin-top: 20px;
+            border: 4px solid var(--border-purple);
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .controls {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--border-purple);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+
+    <div class="toolbar">
+        <div class="marker active" style="background-color: #2d3436;" onclick="setColor('#2d3436', this)"></div>
+        <div class="marker" style="background-color: #d63031;" onclick="setColor('#d63031', this)"></div>
+        <div class="marker" style="background-color: #0984e3;" onclick="setColor('#0984e3', this)"></div>
+        <div class="marker" style="background-color: #00b894;" onclick="setColor('#00b894', this)"></div>
+        <div class="marker" style="background-color: #6c5ce7;" onclick="setColor('#6c5ce7', this)"></div>
+        <div class="marker" style="background-color: #fab1a0;" onclick="setColor('#fab1a0', this)"></div>
+    </div>
+
+    <canvas id="whiteboard"></canvas>
+
+    <div class="controls">
+        <button onclick="clearCanvas()">Clear Board</button>
+        <button onclick="changeSize(5)">Thin</button>
+        <button onclick="changeSize(10)">Medium</button>
+        <button onclick="changeSize(20)">Thick</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('whiteboard');
+        const ctx = canvas.getContext('2d');
+
+        // Set canvas size
+        canvas.width = window.innerWidth * 0.9;
+        canvas.height = window.innerHeight * 0.7;
+
+        let drawing = false;
+        let color = '#2d3436';
+        let lineWidth = 5;
+
+        // Drawing Logic
+        function startPosition(e) {
+            drawing = true;
+            draw(e);
+        }
+
+        function endPosition() {
+            drawing = false;
+            ctx.beginPath();
+        }
+
+        function draw(e) {
+            if (!drawing) return;
+
+            ctx.lineWidth = lineWidth;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = color;
+
+            // Handle both mouse and touch
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.clientX || e.touches[0].clientX) - rect.left;
+            const y = (e.clientY || e.touches[0].clientY) - rect.top;
+
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
+
+        // Control Functions
+        function setColor(newColor, element) {
+            color = newColor;
+            document.querySelectorAll('.marker').forEach(m => m.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        function changeSize(size) {
+            lineWidth = size;
+        }
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // Event Listeners
+        canvas.addEventListener('mousedown', startPosition);
+        canvas.addEventListener('mouseup', endPosition);
+        canvas.addEventListener('mousemove', draw);
+        
+        // Touch support for tablets/phones
+        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startPosition(e); });
+        canvas.addEventListener('touchend', endPosition);
+        canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); });
+    </script>
+</body>
+</html>
