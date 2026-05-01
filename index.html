@@ -3,90 +3,656 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive English Class</title>
+    <title>Interactive English Class - Teacher LG</title>
+    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Fredoka+One&display=swap" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
+            background: linear-gradient(135deg, #B0E0E6 0%, #E0F6FF 100%);
+            font-family: 'Fredoka One', cursive;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            font-family: Arial, sans-serif;
+            overflow-x: hidden;
+            position: relative;
         }
-        header, section {
+
+        .decorative-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            max-width: 800px;
-            margin: 10px 0;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            border-radius: 8px;
-            background: #f9f9f9;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.5;
         }
-        /* CSS for styling sections, Flexbox and Grid for layout */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-        .vibe-check input[type="range"] { width: 100%; }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 10;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: fadeIn 1s ease-in;
+        }
+
+        .main-title {
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 3.5rem;
+            color: #FF0000;
+            text-shadow: 3px 3px 0px #000000, 6px 6px 12px rgba(0, 0, 0, 0.3);
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            animation: titleBounce 1.5s ease-out;
+        }
+
+        .teacher-label {
+            display: inline-block;
+            background-color: white;
+            color: #9370DB;
+            padding: 10px 30px;
+            border-radius: 50px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin-top: 10px;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+
+        .nav-button {
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            background-color: #DDA0DD;
+            color: #333;
+            border: 3px solid #000;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Fredoka One', cursive;
+            touch-action: manipulation;
+        }
+
+        .nav-button:hover {
+            background-color: #BA55D3;
+            transform: scale(1.1);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .section {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            animation: slideIn 0.5s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section h2 {
+            color: #FF6B6B;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            font-family: 'Luckiest Guy', cursive;
+        }
+
+        .greeting-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .greeting-btn {
+            padding: 15px;
+            font-size: 1rem;
+            background-color: #FFE4B5;
+            border: 2px solid #FF8C00;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-family: 'Fredoka One', cursive;
+        }
+
+        .greeting-btn:hover {
+            background-color: #FF8C00;
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .weather-select, .level-select {
+            padding: 10px 15px;
+            font-size: 1rem;
+            border: 2px solid #9370DB;
+            border-radius: 10px;
+            background-color: #F0E6FF;
+            cursor: pointer;
+            font-family: 'Fredoka One', cursive;
+        }
+
+        .vibe-slider {
+            width: 100%;
+            max-width: 400px;
+            height: 10px;
+            margin: 20px auto;
+            cursor: pointer;
+        }
+
+        .vibe-display {
+            font-size: 4rem;
+            margin: 20px 0;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 15px;
+        }
+
+        .question-wheel {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: conic-gradient(#FF69B4 0deg 60deg, #FFB6C1 60deg 120deg, #FFC0CB 120deg 180deg, #FFB6C1 180deg 240deg, #FF69B4 240deg 300deg, #FFB6C1 300deg 360deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            margin: 20px auto;
+        }
+
+        .question-wheel.spinning {
+            animation: spin 2s linear;
+        }
+
+        .question-display {
+            background-color: #FFF0F5;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 1.3rem;
+            color: #333;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .game-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .team-section {
+            background-color: #F5F5F5;
+            padding: 20px;
+            border-radius: 15px;
+            border: 3px solid;
+        }
+
+        .team-1 { border-color: #FF6B6B; }
+        .team-2 { border-color: #4ECDC4; }
+
+        .team-score {
+            font-size: 2rem;
+            color: #FFD700;
+            margin: 10px 0;
+        }
+
+        .verb-input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #DDD;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: 'Fredoka One', cursive;
+        }
+
+        .verb-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .check-btn, .x-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .check-btn {
+            background-color: #90EE90;
+        }
+
+        .x-btn {
+            background-color: #FFB6C1;
+        }
+
+        .timer {
+            font-size: 2rem;
+            color: #FF0000;
+            font-weight: bold;
+        }
+
+        .verbs-list {
+            background-color: white;
+            padding: 10px;
+            border-radius: 10px;
+            max-height: 150px;
+            overflow-y: auto;
+            margin: 10px 0;
+            font-size: 0.9rem;
+        }
+
+        .whiteboard-btn, .music-btn {
+            padding: 12px 25px;
+            font-size: 1.2rem;
+            background-color: #FFD700;
+            border: 3px solid #000;
+            border-radius: 15px;
+            cursor: pointer;
+            margin: 10px;
+            font-weight: bold;
+            font-family: 'Fredoka One', cursive;
+        }
+
+        #whiteboard-modal, #music-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #whiteboard-modal.active, #music-modal.active {
+            display: flex;
+        }
+
+        #whiteboard-canvas {
+            background-color: white;
+            border: 3px solid #333;
+            border-radius: 10px;
+            cursor: crosshair;
+        }
+
+        .canvas-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .canvas-btn {
+            padding: 10px 20px;
+            background-color: #9370DB;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: 'Fredoka One', cursive;
+        }
+
+        .music-player {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes titleBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .main-title { font-size: 2rem; }
+            .game-container { grid-template-columns: 1fr; }
+            #whiteboard-canvas { width: 90vw; height: 70vh; }
+        }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Welcome to the Interactive English Class!</h1>
-    </header>
-    <section id="greetings">
-        <h2>Greetings</h2>
-        <p>Welcome to your English class! We’re excited to have you here.</p>
-    </section>
-    <section id="warm-up">
-        <h2>Warm-up</h2>
-        <div class="video-embed">
-            <iframe width="560" height="315" src="https://www.youtube.com/embed/VIDEO_ID" frameborder="0" allowfullscreen></iframe>
+    <svg class="decorative-bg" viewBox="0 0 1200 800">
+        <g id="stars">
+            <polygon points="100,50 110,80 145,80 115,100 125,130 100,110 75,130 85,100 55,80 90,80" fill="#E6D700" opacity="0.6"/>
+            <polygon points="1100,100 1110,130 1145,130 1115,150 1125,180 1100,160 1075,180 1085,150 1055,130 1090,130" fill="#E6D700" opacity="0.6"/>
+        </g>
+        <g id="swirls">
+            <path d="M50,150 Q100,120 150,150 T250,150" stroke="#DDA0DD" stroke-width="3" fill="none" opacity="0.5"/>
+            <path d="M1100,300 Q1050,280 1000,300 T900,300" stroke="#DDA0DD" stroke-width="3" fill="none" opacity="0.5"/>
+        </g>
+    </svg>
+
+    <div class="content-wrapper">
+        <div class="header">
+            <div class="main-title">WELCOME TO OUR ENGLISH CLASS</div>
+            <div class="teacher-label">👨‍🏫 Teacher LG</div>
         </div>
-        <div class="grid">
-            <!-- Embed for levels 1-4 videos -->
+
+        <div class="nav-container">
+            <button class="nav-button" onclick="showSection('greetings')">Greetings</button>
+            <button class="nav-button" onclick="showSection('warmup')">Warm-up</button>
+            <button class="nav-button" onclick="showSection('review')">Review</button>
+            <button class="nav-button" onclick="showSection('learning')">Learning</button>
+            <button class="nav-button" onclick="showSection('exit')">Exit</button>
         </div>
-    </section>
-    <section id="review">
-        <h2>Review</h2>
-        <div class="spinning-wheel">
-            <button onclick="spinWheel()">Spin the Question Wheel!</button>
-            <div id="wheel" style="width: 200px; height: 200px; border-radius: 50%; background: lightblue; display: flex; align-items: center; justify-content: center;">
-                <!-- SVG or element for wheel -->
-                <div id="question"></div>
+
+        <div style="text-align: center; margin: 20px 0;">
+            <button class="whiteboard-btn" onclick="openWhiteboard()">✏️ Whiteboard</button>
+            <button class="music-btn" onclick="openMusic()">🎵 Music</button>
+        </div>
+
+        <!-- GREETINGS SECTION -->
+        <div class="section active" id="greetings">
+            <h2>🎉 Greetings</h2>
+            <div class="greeting-buttons">
+                <button class="greeting-btn" onclick="showGreeting('Hello!')">Hello 👋</button>
+                <button class="greeting-btn" onclick="showGreeting('Hi!')">Hi 😊</button>
+                <button class="greeting-btn" onclick="showGreeting('Good Morning!')">Good Morning ☀️</button>
+                <button class="greeting-btn" onclick="showGreeting('Good Afternoon!')">Good Afternoon 🌤️</button>
+                <button class="greeting-btn" onclick="showGreeting('Good Evening!')">Good Evening 🌙</button>
+            </div>
+            <div id="greeting-result" style="margin-top: 20px; font-size: 1.5rem; color: #FF6B6B;"></div>
+
+            <div style="margin-top: 30px;">
+                <h3 style="color: #9370DB;">Weather Check ☁️</h3>
+                <select class="weather-select" onchange="updateWeather(this.value)">
+                    <option value="">Select weather...</option>
+                    <option value="sunny">☀️ Sunny</option>
+                    <option value="windy">💨 Windy</option>
+                    <option value="rainy">🌧️ Rainy</option>
+                    <option value="cloudy">☁️ Cloudy</option>
+                </select>
+                <div id="weather-emoji" style="font-size: 2.5rem; margin-top: 10px;"></div>
+            </div>
+
+            <div style="margin-top: 30px;">
+                <h3 style="color: #9370DB;">Vibe Check 😊 (1-10)</h3>
+                <input type="range" class="vibe-slider" id="vibe-slider" min="1" max="10" value="5" onchange="updateVibe(this.value)">
+                <div class="vibe-display" id="vibe-emoji">😊</div>
             </div>
         </div>
-    </section>
-    <section id="learning">
-        <h2>Learning</h2>
-        <p>Engage with the material and participate in activities.</p>
-        <div class="game">
-            <h3>Two-Team Verb Game</h3>
-            <p>Teams will race against the timer!</p>
-            <div id="scoreboard">
-                <div>Team A: <span id="scoreA">0</span></div>
-                <div>Team B: <span id="scoreB">0</span></div>
+
+        <!-- WARM-UP SECTION -->
+        <div class="section" id="warmup">
+            <h2>🏃 Warm-up</h2>
+            <select class="level-select" onchange="loadWarmupLevel(this.value)">
+                <option value="">Choose a level...</option>
+                <option value="1">Level 1</option>
+                <option value="2">Level 2</option>
+                <option value="3">Level 3</option>
+                <option value="4">Level 4</option>
+            </select>
+            <div class="video-container">
+                <iframe id="warmup-video" src="" allowfullscreen></iframe>
             </div>
-            <button onclick="startGame()">Start Game</button>
-            <div id="timer">Time Left: <span id="time">60</span> seconds</div>
         </div>
-    </section>
-    <section id="exit">
-        <h2>Exit</h2>
-        <label for="vibe-check">How was the class?</label>
-        <div class="vibe-check">
-            <input type="range" min="1" max="5" id="vibe-check" />
+
+        <!-- REVIEW SECTION -->
+        <div class="section" id="review">
+            <h2>🎯 Review</h2>
+            <p style="margin: 20px 0;">Click the wheel to reveal a question!</p>
+            <div style="text-align: center;">
+                <div class="question-wheel" onclick="spinWheel()"></div>
+                <div class="question-display" id="question-display">Click the wheel!</div>
+            </div>
         </div>
-        <label for="weather-select">Select Weather:</label>
-        <select id="weather-select">
-            <option value="sunny">Sunny</option>
-            <option value="rainy">Rainy</option>
-            <option value="cloudy">Cloudy</option>
-        </select>
-    </section>
+
+        <!-- LEARNING SECTION -->
+        <div class="section" id="learning">
+            <h2>📚 Learning</h2>
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/4c6FyuetSVo" allowfullscreen></iframe>
+            </div>
+        </div>
+
+        <!-- EXIT SECTION -->
+        <div class="section" id="exit">
+            <h2>🎮 Verb Game</h2>
+            <div style="text-align: center; margin: 20px 0;">
+                <div class="timer" id="timer">1:30</div>
+                <button class="nav-button" onclick="startGameTimer()" style="background-color: #90EE90;">▶️ Start</button>
+                <button class="nav-button" onclick="resetGameTimer()" style="background-color: #FFB6C1;">🔄 Reset</button>
+            </div>
+
+            <div class="game-container">
+                <div class="team-section team-1">
+                    <div style="font-size: 1.5rem;">🔴 Team 1</div>
+                    <div class="team-score" id="team1-score">0</div>
+                    <input type="text" class="verb-input" id="team1-verb" placeholder="Enter a verb..." disabled>
+                    <div class="verb-actions">
+                        <button class="check-btn" onclick="validateVerb('team1')" disabled>✅</button>
+                        <button class="x-btn" onclick="clearVerb('team1')" disabled>❌</button>
+                    </div>
+                    <div class="verbs-list" id="team1-verbs"></div>
+                </div>
+
+                <div class="team-section team-2">
+                    <div style="font-size: 1.5rem;">🔵 Team 2</div>
+                    <div class="team-score" id="team2-score">0</div>
+                    <input type="text" class="verb-input" id="team2-verb" placeholder="Enter a verb..." disabled>
+                    <div class="verb-actions">
+                        <button class="check-btn" onclick="validateVerb('team2')" disabled>✅</button>
+                        <button class="x-btn" onclick="clearVerb('team2')" disabled>❌</button>
+                    </div>
+                    <div class="verbs-list" id="team2-verbs"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Whiteboard Modal -->
+    <div id="whiteboard-modal">
+        <div>
+            <canvas id="whiteboard-canvas" width="800" height="600"></canvas>
+            <div class="canvas-controls">
+                <input type="color" id="pen-color" value="#000000">
+                <input type="range" id="pen-size" min="1" max="20" value="3">
+                <button class="canvas-btn" onclick="clearCanvas()">Clear</button>
+                <button class="canvas-btn" onclick="closeWhiteboard()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Music Modal -->
+    <div id="music-modal">
+        <div class="music-player">
+            <h2>🎵 Music</h2>
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/yBanUW7ja8M" frameborder="0" allowfullscreen></iframe>
+            <br><br>
+            <button class="nav-button" onclick="closeMusic()">Close</button>
+        </div>
+    </div>
+
     <script>
-        function spinWheel() {
-            // Add logic to spin wheel and select a question
+        function showSection(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
         }
 
-        function startGame() {
-            // Initialize game and timer
+        function showGreeting(greeting) {
+            document.getElementById('greeting-result').textContent = greeting;
         }
+
+        function updateWeather(weather) {
+            const emojis = { 'sunny': '☀️', 'windy': '💨', 'rainy': '🌧️', 'cloudy': '☁️' };
+            document.getElementById('weather-emoji').textContent = emojis[weather] || '';
+        }
+
+        function updateVibe(value) {
+            const emojis = ['😢', '😢', '😐', '😐', '😊', '😊', '😄', '😄', '😄', '🤩'];
+            document.getElementById('vibe-emoji').textContent = emojis[value - 1];
+        }
+
+        function loadWarmupLevel(level) {
+            const ids = { '1': '_dPkuOEcs28', '2': '_dPkuOEcs28', '3': '_dPkuOEcs28', '4': '_dPkuOEcs28' };
+            if (level) document.getElementById('warmup-video').src = `https://www.youtube.com/embed/${ids[level]}`;
+        }
+
+        const questions = ['What was the main character\'s name?', 'Where did the story take place?', 'What was the problem?', 'How was it solved?', 'What did you learn?', 'Who was the antagonist?', 'What was the climax?'];
+
+        function spinWheel() {
+            const wheel = document.querySelector('.question-wheel');
+            wheel.classList.remove('spinning');
+            setTimeout(() => {
+                wheel.classList.add('spinning');
+                setTimeout(() => {
+                    wheel.classList.remove('spinning');
+                    document.getElementById('question-display').textContent = questions[Math.floor(Math.random() * questions.length)];
+                }, 2000);
+            }, 50);
+        }
+
+        let gameActive = false, timeRemaining = 90, team1Verbs = [], team2Verbs = [];
+        const verbs = ['run', 'walk', 'talk', 'sing', 'dance', 'jump', 'sit', 'stand', 'eat', 'drink', 'sleep', 'wake', 'play', 'work', 'study', 'read', 'write', 'draw', 'paint', 'cook', 'clean', 'watch', 'listen', 'speak', 'think', 'feel', 'love', 'like', 'hate', 'want', 'need', 'have', 'be', 'go', 'come', 'stay', 'leave', 'arrive', 'depart', 'start', 'stop', 'begin', 'end', 'continue', 'break', 'finish', 'complete', 'create', 'make', 'build', 'destroy', 'open', 'close', 'push', 'pull', 'throw', 'catch', 'give', 'take', 'send', 'receive', 'ask', 'answer', 'help', 'teach', 'learn'];
+
+        function startGameTimer() {
+            if (gameActive) return;
+            gameActive = true;
+            timeRemaining = 90;
+            document.querySelectorAll('.verb-input').forEach(el => el.disabled = false);
+            document.querySelectorAll('.check-btn, .x-btn').forEach(el => el.disabled = false);
+            document.getElementById('team1-verb').focus();
+
+            setInterval(() => {
+                timeRemaining--;
+                const m = Math.floor(timeRemaining / 60);
+                const s = timeRemaining % 60;
+                document.getElementById('timer').textContent = `${m}:${s.toString().padStart(2, '0')}`;
+                if (timeRemaining === 0) {
+                    gameActive = false;
+                    document.querySelectorAll('.verb-input, .check-btn, .x-btn').forEach(el => el.disabled = true);
+                }
+            }, 1000);
+        }
+
+        function resetGameTimer() {
+            gameActive = false;
+            timeRemaining = 90;
+            document.getElementById('timer').textContent = '1:30';
+            document.getElementById('team1-score').textContent = '0';
+            document.getElementById('team2-score').textContent = '0';
+            document.getElementById('team1-verbs').innerHTML = '';
+            document.getElementById('team2-verbs').innerHTML = '';
+            team1Verbs = [];
+            team2Verbs = [];
+            document.querySelectorAll('.verb-input, .check-btn, .x-btn').forEach(el => el.disabled = true);
+        }
+
+        function validateVerb(team) {
+            const inputId = `${team}-verb`;
+            const verb = document.getElementById(inputId).value.toLowerCase().trim();
+            if (!verb) { alert('Enter a verb!'); return; }
+            if (!verbs.includes(verb)) { alert('Invalid verb!'); document.getElementById(inputId).value = ''; return; }
+            const list = team === 'team1' ? team1Verbs : team2Verbs;
+            if (list.includes(verb)) { alert('Already used!'); document.getElementById(inputId).value = ''; return; }
+
+            list.push(verb);
+            const scoreId = `${team}-score`;
+            document.getElementById(scoreId).textContent = parseInt(document.getElementById(scoreId).textContent) + 1;
+            document.getElementById(`${team}-verbs`).innerHTML += `<span style="display: inline-block; background: ${team === 'team1' ? '#FFE4B5' : '#B0E0E6'}; padding: 5px 10px; margin: 5px; border-radius: 5px;">${verb}</span>`;
+            document.getElementById(inputId).value = '';
+            document.getElementById(inputId).focus();
+        }
+
+        function clearVerb(team) {
+            document.getElementById(`${team}-verb`).value = '';
+        }
+
+        let isDrawing = false, canvas, ctx;
+        function openWhiteboard() {
+            document.getElementById('whiteboard-modal').classList.add('active');
+            canvas = document.getElementById('whiteboard-canvas');
+            ctx = canvas.getContext('2d');
+            canvas.onmousedown = () => { isDrawing = true; ctx.beginPath(); };
+            canvas.onmousemove = (e) => {
+                if (!isDrawing) return;
+                const rect = canvas.getBoundingClientRect();
+                ctx.strokeStyle = document.getElementById('pen-color').value;
+                ctx.lineWidth = document.getElementById('pen-size').value;
+                ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+                ctx.stroke();
+            };
+            canvas.onmouseup = () => { isDrawing = false; };
+        }
+
+        function closeWhiteboard() { document.getElementById('whiteboard-modal').classList.remove('active'); }
+        function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+        function openMusic() { document.getElementById('music-modal').classList.add('active'); }
+        function closeMusic() { document.getElementById('music-modal').classList.remove('active'); }
+
+        updateVibe(5);
     </script>
 </body>
 </html>
