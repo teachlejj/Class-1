@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive English Class</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+        header, section {
+            width: 100%;
+            max-width: 800px;
+            margin: 10px 0;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        /* CSS for styling sections, Flexbox and Grid for layout */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .vibe-check input[type="range"] { width: 100%; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to the Interactive English Class!</h1>
+    </header>
+    <section id="greetings">
+        <h2>Greetings</h2>
+        <p>Welcome to your English class! We’re excited to have you here.</p>
+    </section>
+    <section id="warm-up">
+        <h2>Warm-up</h2>
+        <div class="video-embed">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/VIDEO_ID" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div class="grid">
+            <!-- Embed for levels 1-4 videos -->
+        </div>
+    </section>
+    <section id="review">
+        <h2>Review</h2>
+        <div class="spinning-wheel">
+            <button onclick="spinWheel()">Spin the Question Wheel!</button>
+            <div id="wheel" style="width: 200px; height: 200px; border-radius: 50%; background: lightblue; display: flex; align-items: center; justify-content: center;">
+                <!-- SVG or element for wheel -->
+                <div id="question"></div>
+            </div>
+        </div>
+    </section>
+    <section id="learning">
+        <h2>Learning</h2>
+        <p>Engage with the material and participate in activities.</p>
+        <div class="game">
+            <h3>Two-Team Verb Game</h3>
+            <p>Teams will race against the timer!</p>
+            <div id="scoreboard">
+                <div>Team A: <span id="scoreA">0</span></div>
+                <div>Team B: <span id="scoreB">0</span></div>
+            </div>
+            <button onclick="startGame()">Start Game</button>
+            <div id="timer">Time Left: <span id="time">60</span> seconds</div>
+        </div>
+    </section>
+    <section id="exit">
+        <h2>Exit</h2>
+        <label for="vibe-check">How was the class?</label>
+        <div class="vibe-check">
+            <input type="range" min="1" max="5" id="vibe-check" />
+        </div>
+        <label for="weather-select">Select Weather:</label>
+        <select id="weather-select">
+            <option value="sunny">Sunny</option>
+            <option value="rainy">Rainy</option>
+            <option value="cloudy">Cloudy</option>
+        </select>
+    </section>
+    <script>
+        function spinWheel() {
+            // Add logic to spin wheel and select a question
+        }
+
+        function startGame() {
+            // Initialize game and timer
+        }
+    </script>
+</body>
+</html>
